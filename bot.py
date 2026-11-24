@@ -5,12 +5,14 @@ from ejdarha import Ejderha
 
 intents = discord.Intents.default()
 intents.message_content = True
-client = commands.Bot(command_prefix='/', intents=intents)
+
+# Özel help komutunun çakışmaması için help_command=None eklendi
+client = commands.Bot(command_prefix='/', intents=intents, help_command=None)
 
 
 @client.event
 async def on_ready():
-    print(f'Giriş yaptı:  {client.user}')
+    print(f'Giriş yaptı: {client.user}')
 
 
 @client.event
@@ -44,4 +46,29 @@ async def savun(ctx):
 @client.command()
 async def about(ctx):
     await ctx.send('Bu discord.py kütüphanesi ile oluşturulmuş echo-bot!')
+
+
+@client.command()
+async def repeat(ctx, sayi: int, *, mesaj: str):
+    if sayi < 1 or sayi > 10:
+        await ctx.send("Lütfen 1 ile 10 arasında bir sayı girin.")
+        return
+
+    for _ in range(sayi):
+        await ctx.send(mesaj)
+
+
+@client.command()
+async def help(ctx):
+    yardim_mesaji = (
+        "**Yardım Menüsü**\n"
+        "1. `/info` : Ejderha ile ilgili bilgi verir.\n"
+        "2. `/saldır` : Ejderha saldırır.\n"
+        "3. `/savun` : Ejderha savunma yapar.\n"
+        "4. `/about` : Bot bilgisi verir.\n"
+        "5. `/repeat [sayı] [mesaj]` : Mesajı belirtilen sayıda tekrarlar."
+    )
+    await ctx.send(yardim_mesaji)
+
+
 client.run(TOKEN)
